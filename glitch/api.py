@@ -1,5 +1,6 @@
 import requests
 import json
+import functools
 
 
 class GlitchAPI(object):
@@ -54,20 +55,4 @@ class GlitchAPI(object):
         The magic happens here.  Just call the API method with _'s instead of
         "."s, and it returns a requests.model.Response instance.
         """
-        return _ProxyCall(self, method.replace('_', '.'))
-
-
-class _ProxyCall(object):
-    """
-    Wrapper for returning dynamically defined API methods.
-    There is no whitelist of methods.
-
-    See http://api.glitch.com/ for documentation
-    """
-    def __init__(self, api, method):
-        super(_ProxyCall, self).__init__()
-        self.api = api
-        self.method = method
-
-    def __call__(self, **kwargs):
-        return self.api._request(self.method, **kwargs)
+        return functools.partial(self._request, method.replace('_', '.'))
