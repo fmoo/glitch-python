@@ -38,10 +38,8 @@ class GlitchAPI(object):
         response.raise_for_status()
 
         # For some reason, this doesn't work.
-        #response.content = json.load(response)
-        response.content = json.loads(response.content)
-
-        return response
+        #return json.load(response)
+        return json.loads(response.content)
 
     def _uri(self, path):
         """

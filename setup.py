@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='glitch-python',
-      version='0.1',
+      version='0.2',
       description='Python API bindings for the game glitch',
       author='Peter Ruibal',
       author_email='ruibalp@gmail.com',

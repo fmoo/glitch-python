@@ -5,11 +5,11 @@ from config import *
 class CharAPI(glitch.GlitchAPI):
     @property
     def learning_something(self):
-        return len(self.skills_listLearning().content['learning'])
+        return len(self.skills_listLearning()['learning'])
 
     @property
     def learning(self):
-        return self.skills_listLearning().content['learning']
+        return self.skills_listLearning()['learning']
 
     @property
     def learn_time_left(self):
@@ -38,12 +38,12 @@ while True:
 
     print "you are not learning anything!"
     print "fetching learnable skills:"
-    can_learn = char.skills_listAvailable().content['skills']
+    can_learn = char.skills_listAvailable()['skills']
 
     if len(can_learn) > 0:
         picked = random.choice(can_learn.keys())
         print "learning", picked, "..."
-        print char.learn(picked).content
+        print char.learn(picked)
     else:
         print "... no more skills to learn!  Play the game some more!"
         break
