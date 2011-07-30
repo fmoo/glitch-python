@@ -34,6 +34,60 @@ class DBBuilder(object):
         db = shelve.open(filename, writeback=True)
         return cls(db)
 
+    def refresh_skills(self):
+        api = self.api
+        db = self.db
+
+        print "Fetching one skill..."
+        num_skills = api.skills_listAll(per_page=1)['total']
+        while True:
+            print "Fetching %d skills" % num_skills
+            skills = api.skills_listAll(per_page=num_skills)
+            # Uh, we *just* got more skills
+            if skills['total'] != num_skills:
+                num_skills = skills['total']
+                continue
+
+            k = 'skills.all'
+            if k not in db:
+                print "Adding skill cache to db"
+                db[k] = skills
+            elif db[k] != skills:
+                print "Skills changed!"
+                db[k] = skills
+                # TODO- diff them
+            else:
+                print "No skill updates"
+            break
+        return self
+
+    def refresh_achievements(self):
+        api = self.api
+        db = self.db
+
+        print "Fetching one achievement..."
+        num_achievements = api.achievements_listAll(per_page=1)['total']
+        while True:
+            print "Fetching %d achievements" % num_achievements
+            achievements = api.achievements_listAll(per_page=num_achievements)
+            # Uh, we *just* got more skills
+            if achievements['total'] != num_achievements:
+                num_achievements = achievements['total']
+                continue
+
+            k = 'achievements.all'
+            if k not in db:
+                print "Adding achievement cache to db"
+                db[k] = achievements
+            elif db[k] != achievements:
+                print "Achievements changed!"
+                db[k] = achievements
+                # TODO- diff them
+            else:
+                print "No achievement updates"
+            break
+        return self
+
     def refresh_locations(self):
         """
         Walk the API, refreshing all the contents of the db.
@@ -50,7 +104,6 @@ class DBBuilder(object):
             print "New hubs!"
             # XXX- Show the new hubs.  For now, idc
             db['hubs'] = hubs
-
 
         for hub_id, hub_details in hubs.iteritems():
             print "Fetching streets for", hub_details['name']
@@ -85,10 +138,11 @@ class DBBuilder(object):
         return self
 
 
-
 if __name__ == '__main__':
     api = GlitchAPI(ACCESS_TOKEN)
     DBBuilder.for_shelve_filename('foo.db') \
              .set_api(GlitchAPI(ACCESS_TOKEN)) \
+             .refresh_skills() \
+             .refresh_achievements() \
              .refresh_locations()
 
