@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html>
+{% if error_msg %}
+<div class="error_msg">
+  {{ error_msg }}
+</div>
+{% endif %}
+  <h1>You are currently
+{% if not has_token %}NOT {% endif %}
+logged in{% if scope %} with {{scope}} permission.{%else%}.
+{% endif %}
+  <h2>
   <ul>
     <li><a href="/oauth/">test oauth</a></li>
+    <li><a href="/logout/">logout</a></li>
   </ul>
 </html>

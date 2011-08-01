@@ -10,5 +10,8 @@ handlers:
 - url: /oauth/.*
   script: oauth.py
 
+- url: /logout/
+  script: logout.py
+
 - url: /.*
   script: not_found.py

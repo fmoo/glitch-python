@@ -1,5 +1,7 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+from gaesessions import get_current_session
+from common import BaseHandler
 
 import config
 import requests
@@ -18,13 +20,19 @@ except ImportError:
 from urllib import urlencode
 
 
-class OAuthIndex(webapp.RequestHandler):
+class OAuthIndex(BaseHandler):
     def get(self):
         scope = config.DEFAULT_SCOPE
         self.redirect('/oauth/' + scope + '/step1/')
 
-class OAuthStep1(webapp.RequestHandler):
+class OAuthStep1(BaseHandler):
     def get(self, scope):
+        session = get_current_session()
+        if session.is_active():
+            if session.get('scope') == scope:
+                self.go_home('You\'re already authenticated!')
+                return
+
         # For Now, always redirect to glitch
         query = {
           'response_type': 'code',
@@ -38,14 +46,14 @@ class OAuthStep1(webapp.RequestHandler):
 
 
 import pprint
-class OAuthStep2(webapp.RequestHandler):
+class OAuthStep2(BaseHandler):
     def oauth_fail(self, obj):
         self.error(400)
         description = obj.get('error_description', None)
 
-        # XXX- Do something smarter than just printing this error message
         if description is not None:
-            self.response.out.write(description)
+            self.go_home(description)
+            return
 
     def get(self):
         code = self.request.get('code', None)
@@ -78,7 +86,16 @@ class OAuthStep2(webapp.RequestHandler):
         # - 'token_type' - I get 'bearer' pretty much all the time;
         #                  must be some kind of spec compliance thing
         # - 'scope' - should match the scope you sent in stage1
-        self.response.out.write("It Worked")
+        session = get_current_session()
+        session.start()
+        if not session.is_active():
+            self.go_home('It worked, but you need a session to continue')
+            return
+
+        session['oauth_access_token'] = data.get('access_token')
+        session['oauth_scope'] = data.get('scope')
+        session['ouath_token_type'] = data.get('token_type')
+        self.go_home()
 
         # XXX- Hey, you should save data['access_token'] for this user
 
