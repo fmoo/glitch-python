@@ -62,6 +62,7 @@ class GlitchDateTime(object):
         self.year, seconds = divmod(seconds, SECONDS_PER_YEAR)
         day, seconds = divmod(seconds, SECONDS_PER_DAY)
         self.hour, seconds = divmod(seconds, SECONDS_PER_HOUR)
+
         self.minute, self.second = divmod(seconds, SECONDS_PER_MINUTE)
 
         self.weekday = \
@@ -70,7 +71,16 @@ class GlitchDateTime(object):
         self.month, day = dy_to_md(day)
         self.day = day + 1
 
+        self.hour = int(self.hour)
+        self.minute = int(self.minute)
+        self.second = int(self.second)
+        self.year = int(self.year)
+
+    @property
+    def monthname(self):
+        return MONTHS[self.month]
+
     def __repr__(self):
         return '<Year=%d,Month=%s,Day=%d,Hour=%d,Minute=%d,Second=%d>' % \
-               (self.year, MONTHS[self.month], self.day, self.hour,
+               (self.year, self.monthname, self.day, self.hour,
                 self.minute, self.second)
