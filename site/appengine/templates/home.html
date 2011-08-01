@@ -14,4 +14,9 @@ logged in{% if scope %} with {{scope}} permission.{%else%}.
     <li><a href="/oauth/">test oauth</a></li>
     <li><a href="/logout/">logout</a></li>
   </ul>
+
+  <div class="time_display">
+    It is {{ now.hour }}:{{ now.minutestr }}:{{ now.second }} {{ now.weekday }},
+    the {{ now.day|ordinal }} of {{ now.monthname }}, {{ now.year }}
+  </div>
 </html>

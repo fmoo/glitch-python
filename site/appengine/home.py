@@ -1,15 +1,14 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
+from common import BaseHandler
 from gaesessions import get_current_session
 
 import logging
 
-class MainPage(webapp.RequestHandler):
+class MainPage(BaseHandler):
     def get(self):
-        data = {
-          'error_msg': self.request.get('error_msg'),
-        }
+        data = self.default_data()
 
         # Build data from session
         session = get_current_session()
