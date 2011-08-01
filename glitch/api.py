@@ -1,6 +1,6 @@
 import requests
-import json
 import functools
+from compat import json
 
 
 class GlitchAPI(object):

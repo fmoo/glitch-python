@@ -8,15 +8,7 @@ import requests
 import logging
 import monkeys
 
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        logging.error("json or simplejson are required to run this")
-        raise
-
+from glitch.compat import json
 from urllib import urlencode
 
 
