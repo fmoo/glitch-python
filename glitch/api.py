@@ -3,6 +3,18 @@ import functools
 from compat import json
 
 
+class GlitchError(ValueError):
+    """ Wrapper for errors to be thrown if content['ok'] is 0 """
+    def __init__(self, content, response):
+        self.content = content
+        self.response = response
+        super(GlitchError, self).__init__(self.error)
+
+    @property
+    def error(self):
+        return self.content['error']
+
+
 class GlitchAPI(object):
     DOMAIN = 'api.glitch.com'
     BASE_PATH = '/simple'
@@ -38,8 +50,13 @@ class GlitchAPI(object):
         response.raise_for_status()
 
         # For some reason, this doesn't work.
-        #return json.load(response)
-        return json.loads(response.content)
+        #content = json.load(response)
+        content = json.loads(response.content)
+
+        if content['ok'] == '0' or content['ok'] == 0:
+            raise GlitchError(content, response)
+
+        return content
 
     def _uri(self, path):
         """
