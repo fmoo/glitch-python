@@ -69,7 +69,7 @@ class GlitchDateTime(object):
           DAYS_OF_WEEK[int((day + (NON_RECURSE_DAYS_PER_YEAR * self.year)) % 8)]
 
         self.month, day = dy_to_md(day)
-        self.day = day + 1
+        self.day = int(day + 1)
 
         self.hour = int(self.hour)
         self.minute = int(self.minute)
