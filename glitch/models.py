@@ -34,6 +34,9 @@ class Resource(Feature):
       "Chickens": "Chicken",
       "Growths": "Growth",
       "Barnacles": "Barnacle",
+      "Batterflies": "Batterfly",
+      "Piles": "Pile",
+      "Bogs": "Bog",
     }
 
     """ A Resource.  Has an `amount` and a `name` attribute """
